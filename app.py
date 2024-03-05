@@ -1,8 +1,12 @@
 from flask import Flask
+from app_resources.views import view
+
 
 def create_app() -> Flask:
     app = Flask(__name__)
     app.config.from_pyfile('./app_resources/config.py', silent=True)
+
+    app.register_blueprint(view)
 
     return app
 
