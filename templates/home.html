@@ -25,9 +25,12 @@
     <input type="file" id="file-selector">
     <button id="submit-btn">Submit</button>
 
+    <audio controls id="audio-player" style="display:none;"></audio> <!-- Hidden audio player -->
+
     <script>
         const fileSelector = document.getElementById('file-selector');
         const submitBtn = document.getElementById('submit-btn');
+        const audioPlayer = document.getElementById('audio-player');
 
         submitBtn.addEventListener('click', () => {
             const file = fileSelector.files[0];
@@ -47,10 +50,12 @@
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-                return response.json();
+                return response.blob();
             })
-            .then(data => {
-                console.log('Success:', data);
+            .then(blob => {
+                const objectURL = URL.createObjectURL(blob);
+                audioPlayer.src = objectURL;
+                audioPlayer.style.display = 'block'; // Show the audio player
             })
             .catch(error => {
                 console.error('Error:', error);
