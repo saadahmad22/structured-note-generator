@@ -1,10 +1,20 @@
 import ffmpeg
+import os
+import speech_recognition as sr
 
-def extract():
-    pass
+r = sr.Recognizer()
 
-# Load the video file
-input_file = ffmpeg.input('vid.mp4')
+def extract(input_loc, output_loc):
+    if not os.path.isfile(output_loc):
+        input_ = ffmpeg.input(input_loc)
+        input_.output(output_loc, acodec='pcm_s16le', ar='16000', ac='1').run()
+    return open(output_loc, "rb")
 
-# Extract the audio and save it as an MP3 file
-input_file.output('audio.mp3', acodec='mp3').run()
+def audio_to_text(input_loc):
+    try:
+        speech = sr.AudioFile(input_loc)
+        with speech as source:
+            audio = r.record(source)
+            return r.recognize_google(audio)
+    except:
+        return {"done": False}
